@@ -23,7 +23,7 @@ namespace SimulatedDevice
 
                 var data = new { Action = action, ActionType = "SpotStateChange" };
                 string messageJson = JsonConvert.SerializeObject(data);
-                Message message = new Message(Encoding.ASCII.GetBytes(messageJson));
+                Message message = new Message(Encoding.ASCII.GetBytes(messageJson)) { ContentType = "application/json", ContentEncoding = "utf-8"};
 
                 await Client.SendEventAsync(message);
             }
