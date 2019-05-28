@@ -1,46 +1,39 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Net.Http;
 using System.Threading.Tasks;
-using Microsoft.Azure.EventHubs;
 using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.WebJobs.Extensions.Http;
+using Microsoft.Azure.WebJobs.Extensions.SignalRService;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace Functions
 {
     public static class ParkingFunctions
     {
+        private const string ParkingStateHubName = "ParkingState";
+
         [FunctionName("react-spot-state-changes")]
-        public static async Task Run([EventHubTrigger("spot-state-changes", Connection = "EventHubConnectionString")] string messageBody, ILogger log)
+        public static async Task Run(
+            [EventHubTrigger("spot-state-changes", Connection = "EventHubConnectionString")]
+            string messageBody,
+            [SignalR(HubName = ParkingStateHubName)] IAsyncCollector<SignalRMessage> signalRMessages,
+            ILogger log)
         {
-            var exceptions = new List<Exception>();
+            log.LogInformation($"C# Event Hub trigger function processed a message: {messageBody}");
 
-            //foreach (EventData eventData in events)
-            //{
-                try
-                {
-                    //string messageBody = Encoding.UTF8.GetString(eventData.Body.Array, eventData.Body.Offset, eventData.Body.Count);
+            await signalRMessages.AddAsync(new SignalRMessage
+            {
+                Target = "parking-state-change",
+                Arguments = new object[] { JsonConvert.DeserializeObject(messageBody) }
+            });
+        }
 
-                    // Replace these two lines with your processing logic.
-                    log.LogInformation($"C# Event Hub trigger function processed a message: {messageBody}");
-                    await Task.Yield();
-                }
-                catch (Exception e)
-                {
-                    // We need to keep processing the rest of the batch - capture this exception and continue.
-                    // Also, consider capturing details of the message that failed processing so it can be processed again later.
-                    exceptions.Add(e);
-                }
-            //}
-
-            // Once processing of the batch is complete, if any messages in the batch failed processing throw an exception so that there is a record of the failure.
-
-            if (exceptions.Count > 1)
-                throw new AggregateException(exceptions);
-
-            if (exceptions.Count == 1)
-                throw exceptions.Single();
+        [FunctionName("negotiate")]
+        public static SignalRConnectionInfo NegotiateConnection(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequestMessage request,
+            [SignalRConnectionInfo(HubName = ParkingStateHubName)]SignalRConnectionInfo connectionInfo)
+        {
+            return connectionInfo;
         }
     }
 }
