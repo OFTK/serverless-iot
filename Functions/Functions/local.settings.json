@@ -1,0 +1,13 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "EventHubConnectionString": "Endpoint=sb://eventhubscv.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=/taekQj+dEVcktMzh06ZoyeLG49Ku0NXmG1ONvXDZ40=",
+    "AzureSignalRConnectionString": "Endpoint=https://serverless-iot-story.service.signalr.net;AccessKey=e0wjrnXKYpanTop3JrveKcoOlK9nJHLsKH++rm3CYGM=;Version=1.0;",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet"
+  },
+  "Host": {
+    "LocalHttpPort": 7071,
+    "CORS": "*"
+  }
+}
