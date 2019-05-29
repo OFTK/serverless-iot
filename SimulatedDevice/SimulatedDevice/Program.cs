@@ -17,6 +17,12 @@ namespace SimulatedDevice
 
         static async Task Main(string[] args)
         {
+            Console.WriteLine("Please select action number: ");
+            Console.WriteLine($"({TakeSpot}) Take Spot");
+            Console.WriteLine($"({LeaveSpot}) Leave Spot");
+            Console.WriteLine();
+            Console.ForegroundColor = ConsoleColor.Green;
+
             while (true)
             {
                 int action = GetSimulatedAction();
@@ -25,6 +31,7 @@ namespace SimulatedDevice
                 string messageJson = JsonConvert.SerializeObject(data);
                 Message message = new Message(Encoding.ASCII.GetBytes(messageJson)) { ContentType = "application/json", ContentEncoding = "utf-8"};
 
+                Console.WriteLine($"Simulating action ({action}).");
                 await Client.SendEventAsync(message);
             }
         }
@@ -33,11 +40,6 @@ namespace SimulatedDevice
         {
             while (true)
             { 
-                Console.Clear();
-                Console.WriteLine("Please select action number: ");
-                Console.WriteLine($"({TakeSpot}) Take Spot");
-                Console.WriteLine($"({LeaveSpot}) Leave Spot");
-
                 char keyChar = Console.ReadKey(true).KeyChar;
                 if (char.IsNumber(keyChar))
                 {
