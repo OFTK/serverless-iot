@@ -11,7 +11,7 @@ namespace SimulatedDevice
         private const int TakeSpot = 1;
         private const int LeaveSpot = 2;
 
-        private const string DeviceConnectionString = @"";
+        private const string DeviceConnectionString = @"HostName=SkelIotHub.azure-devices.net;DeviceId=SkeletonDevice;SharedAccessKey=jDJwlhRDQwrfUpm/0nqOk4npxnqVKlE4G9zlPu/7C3g=";
 
         private static readonly DeviceClient Client = DeviceClient.CreateFromConnectionString(DeviceConnectionString);
 
